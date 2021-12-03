@@ -1,5 +1,7 @@
 import './App.css';
 import React, {useEffect, useState} from 'react'
+import { AiFillSound } from "react-icons/ai";
+
 
 
 function App() {
@@ -88,6 +90,8 @@ function App() {
     
   }, [page])
 
+
+
   const quienEsEsePokemon = () => {
       let mensaje = new SpeechSynthesisUtterance();
       
@@ -102,6 +106,12 @@ function App() {
       mensaje.voice = speechSynthesis.getVoices()[8]
 
       speechSynthesis.speak(mensaje)
+  }
+
+  const siguienteFun = () =>{
+    speechSynthesis.cancel()
+    console.log("Cancel");
+    setPage(page+1)
   }
 
 
@@ -123,14 +133,10 @@ function App() {
         {pokData.height/10+" metros"} <br />
         {"Tipo: "+pokData.type} <br />
 
-          <button onClick={quienEsEsePokemon} >
-
           
           <img src={pokData.foto} alt={pokData.name} />
-          
+          <button onClick={quienEsEsePokemon} > <AiFillSound size="30px"/>¿Quien es ese pokemón? </button>
 
-
-          </button>
           <div>
             <p>Estadisticas iniciales</p>
             <ul>
@@ -146,7 +152,7 @@ function App() {
 
       <button onClick={()=>setPage(page-1)} disabled={page<1}> Anterior </button>
 
-      <button onClick={()=>setPage(page+1)} disabled={arrPok.length===0}> Siguiente </button>
+      <button onClick={siguienteFun} disabled={arrPok.length===0}> Siguiente </button>
       
 
       <h1>{page+1}</h1>
