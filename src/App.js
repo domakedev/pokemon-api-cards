@@ -133,11 +133,31 @@ function App() {
         return true
       }
 
-      let mensaje = new SpeechSynthesisUtterance();
+      //Presentacion
+      let presentacion = new SpeechSynthesisUtterance();
+      presentacion.text = `¡Es: ${pokData.name}!`
+
+      presentacion.voice = speechSynthesis.getVoices()[7]
       
-      mensaje.volume = 1;
-      mensaje.rate = 1;
-      mensaje.text = `Es ${pokData.name}`
+      presentacion?.addEventListener('start', function(event) {
+        console.log('Empece presentacion: ' + event.utterance.text);
+        setTaking(true)
+      });
+
+      speechSynthesis.speak(presentacion)
+
+      presentacion?.addEventListener('end', function(event) {
+        console.log('Termine presentacion: ' + event.utterance.text);
+        setTaking(false)
+      });
+
+
+
+
+      //Grito
+      let grito = new SpeechSynthesisUtterance();
+      
+      grito.text = `${pokData.name.slice(0,4)} ${pokData.name.slice(0,4)}`
 
       //mensaje.text = `Es ${pokData.name}, 
       // pesa ${pokData.weight/10} kilogramos, 
@@ -145,18 +165,31 @@ function App() {
       // es de tipo ${pokData.type}
       // `
 
-      mensaje.pitch = 1;
-      mensaje.voice = speechSynthesis.getVoices()[8]
+      if (pokData.weight/10 <= 10) {
+        grito.pitch = 1.5;        
+      } else if (pokData.weight/10 <= 20){
+        grito.pitch = 1.4; 
+      } else if (pokData.weight/10 <=40){
+        grito.pitch = 1.2; 
+      } else if (pokData.weight/10 <= 70){
+        grito.pitch = 0.9; 
+      } else if (pokData.weight/10 <= 100){
+        grito.pitch = 0.6; 
+      } else{
+        grito.pitch = 0.3; 
+      } 
 
-      mensaje?.addEventListener('start', function(event) {
+      //4 mejor, 8 11, 2 pablo
+      grito.voice = speechSynthesis.getVoices()[4]
+      
+      grito?.addEventListener('start', function(event) {
         console.log('Empece a hablar: ' + event.utterance.text);
         setTaking(true)
       });
 
+      speechSynthesis.speak(grito)
 
-      speechSynthesis.speak(mensaje)
-
-      mensaje?.addEventListener('end', function(event) {
+      grito?.addEventListener('end', function(event) {
         console.log('Termine de hablar: ' + event.utterance.text);
         setTaking(false)
       });
