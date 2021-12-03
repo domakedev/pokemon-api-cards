@@ -180,16 +180,11 @@ function App() {
 
   return (
     <div className="App">
+      
       {/* Logo */}
       <img className="logo" src={Logo} alt="" />
 
-      {/* Informacion previa  */}
-      <h3>Usa CHROME para una mejor experiencia</h3>
-      <img
-        className="chrome"
-        src="https://logodownload.org/wp-content/uploads/2017/05/google-chrome-logo.png"
-        alt=""
-      />
+      
 
       <div className="container">
         <div className="interContainer">
@@ -326,7 +321,13 @@ function App() {
         </div>
       </div>
 
-     
+      {/* Informacion previa  */}
+      <h3>Usa CHROME para una mejor experiencia</h3>
+      <img
+        className="chrome"
+        src="https://logodownload.org/wp-content/uploads/2017/05/google-chrome-logo.png"
+        alt=""
+      />
     </div>
   );
 }
