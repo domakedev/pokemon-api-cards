@@ -1,6 +1,20 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+
+//React icons
 import { AiFillSound } from "react-icons/ai";
+import { GiWeight } from "react-icons/gi";
+import { MdStyle } from "react-icons/md";
+import { GiBodyHeight, GiBouncingSword, GiStoneSphere, GiRunningNinja } from "react-icons/gi";
+import { MdHealthAndSafety } from "react-icons/md";
+import { RiSwordFill, RiHeart3Fill } from "react-icons/ri";
+
+//images
+import Logo from "./assets/pokemon-logo.png";
+//import QuienEs from "./assets/quienes.png";
+import kienEs from "./assets/kienEs.jpg";
+
+//import styled from "styled-components"
 
 function App() {
   const [arrPok, setArrPok] = useState([]);
@@ -20,7 +34,9 @@ function App() {
 
         setLoading(true);
 
-        const ruta = `https://pokeapi.co/api/v2/pokemon/?offset=${page*1}&limit=1`;
+        const ruta = `https://pokeapi.co/api/v2/pokemon/?offset=${
+          page * 1
+        }&limit=1`;
         const respuesta = await fetch(ruta);
         const arrPoks = await respuesta.json();
 
@@ -36,30 +52,32 @@ function App() {
           const name = e.stat.name;
           const stat = e["base_stat"];
 
-          return { name, stat }
+          return { name, stat };
         });
-
 
         //Obtener tipo en español
         const typeRuta = await fetch(pokId.types[0].type.url);
         const typeName = await typeRuta.json();
         const typeNameText = typeName.names;
-        const typeNameTextES = typeNameText.filter((e) => e.language.name === "es");
+        const typeNameTextES = typeNameText.filter(
+          (e) => e.language.name === "es"
+        );
 
         let typeTotal = typeNameTextES[0].name;
 
-              //Obtener tipo 2 en español si hay
-              if (pokId.types[1]) {
-                const typeRuta2 = await fetch(pokId.types[1].type.url);
-                const typeName2 = await typeRuta2.json();
-                const typeNameText2 = typeName2.names;
-                const typeNameTextES2 = typeNameText2.filter((e) => e.language.name === "es");
+        //Obtener tipo 2 en español si hay
+        if (pokId.types[1]) {
+          const typeRuta2 = await fetch(pokId.types[1].type.url);
+          const typeName2 = await typeRuta2.json();
+          const typeNameText2 = typeName2.names;
+          const typeNameTextES2 = typeNameText2.filter(
+            (e) => e.language.name === "es"
+          );
 
-                typeTotal = typeTotal + " y " + typeNameTextES2[0].name;
-              }
+          typeTotal = typeTotal + " y " + typeNameTextES2[0].name;
+        }
 
         setLoading(false);
-
 
         //Setear data al terminar consultas
         setPokData({
@@ -69,19 +87,18 @@ function App() {
           foto: pokId.sprites.other["official-artwork"].front_default,
           stats: pokStats,
           type: typeTotal,
-        })
-
+        });
       } catch (error) {
         console.log(error);
       }
     };
 
     fux();
-
   }, [page]);
 
-
   const quienEsEsePokemon = () => {
+
+    //Si esta cargando desactivar boton
 
     //Detecta si el navegador soporta voices
     if (!window.speechSynthesis)
@@ -92,6 +109,8 @@ function App() {
       return true;
     }
 
+    let btn = document.querySelector(".bordeBlanco");
+
     //Narracion de Presentacion
     let presentacion = new SpeechSynthesisUtterance();
     presentacion.text = `¡Es: ${pokData.name}!`;
@@ -101,6 +120,7 @@ function App() {
     presentacion?.addEventListener("start", function (event) {
       console.log("Empece presentacion: " + event.utterance.text);
       setTaking(true);
+      btn.classList.add("waitingForConnection");
     });
 
     speechSynthesis.speak(presentacion);
@@ -110,12 +130,10 @@ function App() {
       setTaking(false);
     });
 
-
     //Narracion de Grito
     let grito = new SpeechSynthesisUtterance();
 
     grito.text = `${pokData.name.slice(0, 4)} ${pokData.name.slice(0, 4)}`;
-
 
     if (pokData.weight / 10 <= 10) {
       grito.pitch = 1.5;
@@ -144,6 +162,7 @@ function App() {
     grito?.addEventListener("end", function (event) {
       console.log("Termine de hablar: " + event.utterance.text);
       setTaking(false);
+      btn.classList.remove("waitingForConnection");
     });
   };
 
@@ -159,55 +178,155 @@ function App() {
     setPage(page - 1);
   };
 
-
   return (
     <div className="App">
+      {/* Logo */}
+      <img className="logo" src={Logo} alt="" />
 
-      Pokemon, tengo que atraparlos!!! Mi destino asi es! Gran camino es...
-      <h1>EN UN MUNDO POR SALVAAAAAR! POKEMON!!!</h1>
-      <h2>USA CHROME PARA UNA MEJOR EXPERIENCIA DE SONIDO</h2>
+      {/* Informacion previa  */}
+      <h3>Usa CHROME para una mejor experiencia</h3>
+      <img
+        className="chrome"
+        src="https://logodownload.org/wp-content/uploads/2017/05/google-chrome-logo.png"
+        alt=""
+      />
+
       <div className="container">
-        {loading ? (
-          <h2>Cargando...</h2>
-        ) : (
-          <div>
-            {" "}
-            {"nombre: " + pokData.name} <br />
-            {pokData.weight / 10 + " Kg"} <br />
-            {pokData.height / 10 + " metros"} <br />
-            {"Tipo: " + pokData.type} <br />
-            <img src={pokData.foto} alt={pokData.name} />
-            <button id="speakbtn" onClick={quienEsEsePokemon} disabled={taking}>
-              {" "}
-              <AiFillSound size="30px" />
-              ¿Quien es ese pokemón?{" "}
-            </button>
-            <div>
-              <p>Estadisticas iniciales</p>
-              <ul>
-                {pokData.stats?.map((e, i) => (
-                  <li key={i}>
-                    {e.name}---{e.stat}
-                  </li>
-                ))}
-              </ul>
+        <div className="interContainer">
+          <header>
+            <div className="voiceIndicators">
+              <div className="bolaAzul">
+                <div className="bordeBlanco"></div>
+              </div>
+
+              <div className="ranura"></div>
+              <div className="ranura"></div>
+              <div className="ranura"></div>
             </div>
+
+            <div className="textAndBtn">
+              <div className="loadCircles">
+                <div className={`circle ${loading ? "circle1" : ""}`}></div>
+                <div className={`circle ${loading ? "circle2" : ""}`}></div>
+                <div className={`circle ${loading ? "circle3" : ""}`}></div>
+              </div>
+
+              <h2 className="nombre">{loading? ". . .": pokData.name}</h2>
+
+              <div className="idPage">
+                <h4>
+                  {page + 1}
+                </h4>
+              </div>
+
+              <button
+                className="voiceBtn"
+                id="speakbtn"
+                onClick={quienEsEsePokemon}
+                disabled={taking || loading}
+              >
+                <AiFillSound size="25px" />
+              </button>
+            </div>            
+          </header>
+
+          <div className="datosBasicos">
+            <div className="datoBasico datoBasicoLarge">
+              <MdStyle size="2.5rem"/><p>Tipo: { 
+                loading? ". . .":pokData.type}</p>
+            </div>            
+            <div className="datoBasico datoBasicoSmall">
+            <GiWeight size="2.5rem"/><p>
+              {loading? ". . .": pokData.weight/10} Kg</p>
+            </div>
+            <div className="datoBasico datoBasicoSmall">
+            <GiBodyHeight size="2.5rem"/><p>
+              {loading? ". . .": pokData.height/10} mts</p>
+            </div>
+            
+           
+             <br />
           </div>
-        )}
+          
+
+          <div className="containerPokImg">
+            {loading ? (
+              <img className="pokImg" src={kienEs} alt={pokData.name} />
+            ) : (
+              <img className="pokImg" src={pokData.foto} alt={pokData.name} />
+            )}
+          </div>
+
+          <ul>
+              {pokData.stats?.map((e, i) => {
+                if (i===0) {
+                  return(<li key={i}>
+                    <RiHeart3Fill size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                }                
+                if (i===1) {
+                  return(<li key={i}>
+                    <RiSwordFill size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                }                
+                if (i===2) {
+                  return(<li key={i}>
+                    <MdHealthAndSafety size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                }                
+                if (i===3) {
+                  return(<li key={i}>
+                    <GiBouncingSword size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                }                
+                if (i===4) {
+                  return(<li key={i}>
+                    <GiStoneSphere size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                }                
+                if (i===5) {
+                  return(<li key={i}>
+                    <GiRunningNinja size="2.5rem"/>
+                    <span>
+                    {e.stat}
+                    </span>
+                  </li>)
+                } else {
+                  return true
+                }         
+              })}
+          </ul>
+
+          <div className="buttons">
+            <button className="pageBtn pageBtnPrev" onClick={atrasFun} disabled={page < 1}>
+              {" "}
+              Anterior{" "}
+            </button>
+
+            <button className="pageBtn pageBtnNext" onClick={siguienteFun} disabled={arrPok.length === 0}>
+              {" "}
+              Siguiente{" "}
+            </button>
+          </div>
+        </div>
       </div>
 
-      <button onClick={atrasFun} disabled={page < 1}>
-        {" "}
-        Anterior{" "}
-      </button>
-
-      <button onClick={siguienteFun} disabled={arrPok.length === 0}>
-        {" "}
-        Siguiente{" "}
-      </button>
-      
-      <h1>{page + 1}</h1>
-
+     
     </div>
   );
 }

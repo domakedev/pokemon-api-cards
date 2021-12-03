@@ -12,11 +12,3 @@ code {
     monospace;
 }
 
-.container{
-  background-color: bisque;
-  min-height: 600px;
-}
-
-img {
-  max-height:300px;
-}
