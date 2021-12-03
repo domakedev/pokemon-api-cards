@@ -14,6 +14,8 @@ function App() {
 
   const [loading, setLoading] = useState(false)
 
+  const [taking, setTaking] = useState();
+
   useEffect(() => {
 
     
@@ -62,7 +64,8 @@ function App() {
 
             typeTotal = typeTotal + " y " + typeNameTextES2[0].name
            }
-           
+
+
 
 
         setLoading(false)
@@ -87,25 +90,78 @@ function App() {
     }
 
     fux()
+           
     
   }, [page])
 
 
+  useEffect(() => {    
+
+    
+    // Add event listener to speakbutton
+    // const el = document.getElementById("speakbtn");
+    // console.log(el);
+    // el?.addEventListener("speech", ()=>{
+    //   alert("speakinnnnnnnnnn")
+    //   let speaking = speechSynthesis.speaking
+
+    //   if (speaking===true) {
+    //     setTaking(true)
+    //   }else {
+    //     setTaking(false)
+    //   }
+
+    // });
+
+
+    
+
+  }, [])
+
+
+  
+
 
   const quienEsEsePokemon = () => {
+
+      if (!window.speechSynthesis) return alert("Lo siento, tu navegador no soporta esta tecnología");
+
+
+      let speakgin = speechSynthesis.speaking
+
+      if (speakgin) {
+        return true
+      }
+
       let mensaje = new SpeechSynthesisUtterance();
       
       mensaje.volume = 1;
       mensaje.rate = 1;
-      mensaje.text = `Es ${pokData.name}, 
-      pesa ${pokData.weight/10} kilogramos, 
-      mide ${pokData.height/10} metros y 
-      es de tipo ${pokData.type}
-      `
+      mensaje.text = `Es ${pokData.name}`
+
+      //mensaje.text = `Es ${pokData.name}, 
+      // pesa ${pokData.weight/10} kilogramos, 
+      // mide ${pokData.height/10} metros y 
+      // es de tipo ${pokData.type}
+      // `
+
       mensaje.pitch = 1;
       mensaje.voice = speechSynthesis.getVoices()[8]
 
+      mensaje?.addEventListener('start', function(event) {
+        console.log('Empece a hablar: ' + event.utterance.text);
+        setTaking(true)
+      });
+
+
       speechSynthesis.speak(mensaje)
+
+      mensaje?.addEventListener('end', function(event) {
+        console.log('Termine de hablar: ' + event.utterance.text);
+        setTaking(false)
+      });
+
+
   }
 
   const siguienteFun = () =>{
@@ -135,7 +191,7 @@ function App() {
 
           
           <img src={pokData.foto} alt={pokData.name} />
-          <button onClick={quienEsEsePokemon} > <AiFillSound size="30px"/>¿Quien es ese pokemón? </button>
+          <button id="speakbtn" onClick={quienEsEsePokemon} disabled={taking}> <AiFillSound size="30px"/>¿Quien es ese pokemón? </button>
 
           <div>
             <p>Estadisticas iniciales</p>
