@@ -123,14 +123,14 @@ function App() {
         {pokData.height/10+" metros"} <br />
         {"Tipo: "+pokData.type} <br />
 
-          <a onClick={quienEsEsePokemon}>
+          <button onClick={quienEsEsePokemon} >
 
           
           <img src={pokData.foto} alt={pokData.name} />
           
 
 
-          </a>
+          </button>
           <div>
             <p>Estadisticas iniciales</p>
             <ul>
